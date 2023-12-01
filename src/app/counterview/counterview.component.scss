@@ -1,0 +1,36 @@
+.widget {
+    display: grid;
+    grid-template-columns: 25% auto 25%;
+    place-items: center;
+    justify-items: center;
+    text-align: center;
+    height: 150px;
+}
+
+.devview {
+    border: 2px solid black;
+    width: 90%;
+    margin: auto;
+}
+
+.divdev {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    border: 2px solid black;
+    font-size: xx-large;
+}
+
+// .divdev {
+//     height: 100%;
+//     padding: auto;
+//     width: 100%;
+//     align-self: center;
+//     justify-self: center;
+//     text-align: center;
+//     border-right: 2px solid black;
+//     border-left: 2px solid black;
+// }
