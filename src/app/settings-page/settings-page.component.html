@@ -1,0 +1,19 @@
+<!-- create a basic angular template driven form -->
+<!-- it should have one text input, one number and an ok and cancel button -->
+<!-- the text input should be required -->
+
+<h1>Settings</h1>
+<form #settingsForm="ngForm">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required [(ngModel)]="name">
+    </div>
+    <div>
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" required [(ngModel)]="age">
+    </div>
+    <div>
+        <button type="submit">OK</button>
+        <button type="button">Cancel</button>
+    </div>
+</form>
