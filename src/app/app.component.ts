@@ -19,9 +19,6 @@ export class AppComponent {
   title = 'CountApp';
   names = ['lucifer', 'satan', 'beelzebub', 'morning star', 'devil'];
   chosenOne = this.sampleOne(this.names);
-  
-  private initBalance = 150;
-  public balance = this.counterServ.getBalanceValue();  // a test value for now. Should be loaded from storage.
 
   constructor(private counterServ: CounterserviceService) {
     // this.counterServ.currentBalance.subscribe(val => this.balance = val);
@@ -31,8 +28,7 @@ export class AppComponent {
     // this.balance = this.counterServ.balance;
     // Testing:
     // when app opens, saved balance should be loaded. Then extra values should be added per day from last saved.
-     
-    this.counterServ.setBalance(this.initBalance);
+    console.log('made app.component');
   }
 
   /**
@@ -51,31 +47,29 @@ export class AppComponent {
   Fake for now. Should call the storage and get the last saved balance as well as the date saved
   Balance is always 70 for now. Date is up to a week ago though.
   */
-  public loadBalance(): number {
+  public loadBalance() {
     // gives a random number between 1 and 6 which is the mock days ellapsed since last opened.
     const variation = this.sampleOne([1,2,3,4,5,6,7]);
 
 
-    const loadedBalance = this.balance;
-    const lastDays = new Date(Date.now()).getDate() - variation;
-    const nowDate = new Date(Date.now());
-    const daysEllapsed = nowDate.getDate() - lastDays;
+    // const loadedBalance = this.balance;
+    // const lastDays = new Date(Date.now()).getDate() - variation;
+    // const nowDate = new Date(Date.now());
+    // const daysEllapsed = nowDate.getDate() - lastDays;
     
-    this.balance = loadedBalance + daysEllapsed * SampleUser.prototype.dailyAllowance;
+    // this.balance = loadedBalance + daysEllapsed * SampleUser.prototype.dailyAllowance;
 
-    return this.balance;
+    // return this.balance;
   }
 
   makeAMess() {
     const coinflip: boolean = Math.random() > 0.5;
 
     if (coinflip) {
-      this.balance += 111;
-      this.counterServ.changeBalanceBy(666);
+      this.counterServ.balance.next(this.counterServ.balance.value + 666);
       this.chosenOne = this.sampleOne(this.names);
     } else {
-      this.balance -= 111;
-      this.counterServ.changeBalanceBy(-666);
+      this.counterServ.balance.next(this.counterServ.balance.value - 666);
     }
   }
 }

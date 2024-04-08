@@ -1,6 +1,6 @@
 // import { FetchBackend, HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -8,14 +8,16 @@ import { Subject, BehaviorSubject } from 'rxjs';
 })
 export class CounterserviceService {
   monthly = 14000;
-  private startingBalance = 270;
+  _balance = 70;
   dailyAllowance = this.monthly/30; 
   lastUpdateDate = new Date();
   
-
   // private balanceCounter!: Observable<number>;
-  public balance = new BehaviorSubject<number>(this.startingBalance);
-  
+  private balance = new BehaviorSubject<number>(150);
+  public currentBalance = this.balance.subscribe(v => {
+    console.log('The current subscription value is: '+ v);
+    this._balance = v;
+  });
   // asObservable().subscribe(v => this._balance = v);
   
 
@@ -24,18 +26,18 @@ export class CounterserviceService {
 
   constructor() { 
     console.log('Creating the service');
-    // const nowDate = new Date(Date.now());
-    // this.lastUpdateDate.setFullYear(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()-2);
-    // this.beSpiteful();
+    const nowDate = new Date(Date.now());
+    this.lastUpdateDate.setFullYear(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()-2);
+    this.beSpiteful();
     // this.loadJsonData();
   }
 
   private async beSpiteful() {
     console.log('taking money for tardiness');
     setInterval(() => {
-      this.balance.next(this.balance.value - 15);
+      this.setBalance(this.getBalanceValue() - 15);
       console.log('30 seconds passed, time is money');
-      console.log(this.balance.value);
+      console.log(this.getBalanceValue());
     }, 30000);
   }
 
@@ -67,11 +69,31 @@ export class CounterserviceService {
   //   this.balanceSubject.next(v);
   // }
 
+  public getBalanceObservable(): Observable<number> {
+    return this.balance.asObservable();
+  }
+
+  public getBalanceValue(): number {
+    console.log('The private balance in service is: ' + this._balance);
+    console.log('From the balance subject: ' + this.balance.getValue());
+    console.log('The subscription is: ' + this.currentBalance);
+    return this._balance;
+  }
+
+  public setBalance(v: number) {
+    this._balance = v;
+    this.balance.next(v);
+  }
 
   /*
   recieves a value to change the balance by
   the number is received as positive or negative already
   */
+  public changeBalanceBy(v: number) {
+    this._balance = this._balance + v;
+    this.balance.next(this._balance);
+  }
+
   
 
   private updateBalance(today: number) {
