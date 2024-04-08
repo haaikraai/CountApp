@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CounterserviceService } from '../counterservice.service';
 import { AsyncPipe } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 
 
 @Component({
@@ -14,24 +14,16 @@ import { BehaviorSubject, Subject } from 'rxjs';
   templateUrl: './counterview.component.html',
   styleUrl: './counterview.component.scss'
 })
-export class CounterviewComponent implements OnChanges {
+export class CounterviewComponent implements OnChanges, OnDestroy {
 
-
-  private _balance = this.counterServ.getBalanceValue();
+  public subscription: Subscription;
+  public subscriptions: Subscription[] = [];
   
-  @Input()
-    set balance(v: number) {
-      this._balance = v;
-      this.counterServ.setBalance(v);
-    }
-    get balance(): number {
-      return this._balance;
-    }
-
+  balance: number = this.counterServ.balance.value;
   // @Input() balance: number = this.counterServ.getBalanceValue();;
   // aname!: string;
 
-  currentDate = new BehaviorSubject<Date>(new Date(Date.now()));
+  // currentDate = new BehaviorSubject<Date>(new Date(Date.now()));
   // balance = 50;
   // @Input('balance') balance: number = 0
   // public get() {
@@ -43,11 +35,19 @@ export class CounterviewComponent implements OnChanges {
   // }
 
   constructor(private counterServ: CounterserviceService) {
+    this.subscription = this.counterServ.balance.subscribe((newValue) => {
+      this.balance = newValue;
+    });
   }
 
   public ngOnInit() {
-    console.log('in oninit');
-    this.balance = this.counterServ.getBalanceValue();
+    console.log('in oninit  for counterViEW comp');
+    
+    console.log(this.subscription);
+
+    // this.subscriptions.push(this.counterServ.balance.subscribe((value) => {
+    //   this.balance = value;
+    // }))
     // this.counterServ.currentBalance.subscribe(v => this.balance = v);
     
   }
@@ -65,46 +65,43 @@ export class CounterviewComponent implements OnChanges {
     }
   }
 
+  public ngOnDestroy(): void {
+      this.subscription?.unsubscribe();
+  }
+
   public updateBalance() {
-    const newBalance = this.counterServ.getBalanceValue();
-    console.log('updating balance: ' + newBalance);
-    this.balance = newBalance;
-    // this.balance = this.counterServ.getBalanceValue();
-    // this.balance = this.counterServ.testBalance(1701309100835);
+    console.log('clikced me');
   }
 
   public saveMoney() {
-    this.balance += this.counterServ.increment;
-    this.counterServ.changeBalanceBy(this.counterServ.increment);
-    console.log(this.counterServ.getBalanceValue());
+    const newBalance = this.balance + this.counterServ.increment;
+    this.counterServ.balance.next(newBalance);
+    console.log(this.balance);
     // this.updateBalance();
   }
 
   public spendMoney() {
-    this.balance -= this.counterServ.decrement;
-    const changing = - this.counterServ.decrement;
-    console.log('changing: ' + changing);
-    this.counterServ.changeBalanceBy(- this.counterServ.decrement);
-    console.log(this.counterServ.getBalanceValue());
+    const newBalance = this.balance - this.counterServ.decrement;
+    this.counterServ.balance.next(newBalance);
+    console.log('taking moneys');
+    console.log(this.balance);
     console.log('with const');
-    this.counterServ.changeBalanceBy(changing);
-    console.log(this.counterServ.getBalanceValue());
     // this.updateBalance();
   }
 
   public addDay() {
-    let newDate = new Date(this.currentDate.getValue());
-    newDate.setDate(newDate.getDate() + 1);
-    this.currentDate.next(newDate);
-    // this.currentDate.next(new Date().setDate(this.currentDate.getValue().getDate() + 1));
+    // let newDate = new Date(this.currentDate.getValue());
+    // newDate.setDate(newDate.getDate() + 1);
+    // this.currentDate.next(newDate);
+    // // this.currentDate.next(new Date().setDate(this.currentDate.getValue().getDate() + 1));
     this.updateBalance();
   }
 
   public subtractDay() {
-    let newDate = new Date(this.currentDate.getValue());
-    newDate.setDate(newDate.getDate() - 1);
-    this.currentDate.next(newDate);
-    this.updateBalance();
+    // let newDate = new Date(this.currentDate.getValue());
+    // newDate.setDate(newDate.getDate() - 1);
+    // this.currentDate.next(newDate);
+    // this.updateBalance();
 
     // this.currentDate.next(new Date(this.currentDate.getValue()). - 1));
   }
