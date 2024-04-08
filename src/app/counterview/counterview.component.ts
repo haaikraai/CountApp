@@ -4,6 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { BehaviorSubject, Subject } from 'rxjs';
 
+
 @Component({
   selector: 'app-counterview',
   standalone: true,
@@ -16,7 +17,8 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class CounterviewComponent implements OnChanges {
 
 
-  _balance = 0;
+  private _balance = this.counterServ.getBalanceValue();
+  
   @Input()
     set balance(v: number) {
       this._balance = v;
@@ -64,7 +66,10 @@ export class CounterviewComponent implements OnChanges {
   }
 
   public updateBalance() {
-    this.balance = this.counterServ.getBalanceValue();
+    const newBalance = this.counterServ.getBalanceValue();
+    console.log('updating balance: ' + newBalance);
+    this.balance = newBalance;
+    // this.balance = this.counterServ.getBalanceValue();
     // this.balance = this.counterServ.testBalance(1701309100835);
   }
 

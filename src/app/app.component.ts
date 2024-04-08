@@ -19,7 +19,9 @@ export class AppComponent {
   title = 'CountApp';
   names = ['lucifer', 'satan', 'beelzebub', 'morning star', 'devil'];
   chosenOne = this.sampleOne(this.names);
-  public balance = 70;
+  
+  private initBalance = 150;
+  public balance = this.counterServ.getBalanceValue();  // a test value for now. Should be loaded from storage.
 
   constructor(private counterServ: CounterserviceService) {
     // this.counterServ.currentBalance.subscribe(val => this.balance = val);
@@ -30,7 +32,7 @@ export class AppComponent {
     // Testing:
     // when app opens, saved balance should be loaded. Then extra values should be added per day from last saved.
      
-    this.counterServ.setBalance(this.loadBalance());
+    this.counterServ.setBalance(this.initBalance);
   }
 
   /**
@@ -51,9 +53,10 @@ export class AppComponent {
   */
   public loadBalance(): number {
     // gives a random number between 1 and 6 which is the mock days ellapsed since last opened.
-    const loadedBalance = 70;
-
     const variation = this.sampleOne([1,2,3,4,5,6,7]);
+
+
+    const loadedBalance = this.balance;
     const lastDays = new Date(Date.now()).getDate() - variation;
     const nowDate = new Date(Date.now());
     const daysEllapsed = nowDate.getDate() - lastDays;

@@ -1,6 +1,6 @@
 <div class="widget">
     <div class="numberrow">
-        <h2 (click)="updateBalance()" class="numberself devview">{{ _balance }}</h2>
+        <h2 (click)="updateBalance()" class="numberself devview">Bal {{ balance }}</h2>
     </div>
     <div class="buttonrow">
         <div class="buttonbox devview clickers" (click)="spendMoney()">-</div>
@@ -10,8 +10,8 @@
 <div class="devblock">
     <div><h1>Temporary stuff</h1></div>
     <div>
-        <button class="datebutton" (click)="addDay()">increase date</button>
         <button class="datebutton" (click)="subtractDay()">decrease date</button>
+        <button class="datebutton" (click)="addDay()">increase date</button>
     </div>
     <div> {{ currentDate.getValue() | date }}</div>
 </div>
