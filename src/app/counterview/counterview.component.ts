@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/
 import { CounterserviceService } from '../counterservice.service';
 import { AsyncPipe } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 
 
 @Component({
@@ -50,6 +50,12 @@ export class CounterviewComponent implements OnChanges, OnDestroy {
     // }))
     // this.counterServ.currentBalance.subscribe(v => this.balance = v);
     
+    interval(24000).subscribe((period) => {
+      console.log('24 seconds passed');
+      console.log('Time is money, friend');
+      this.counterServ.balance.next(this.balance - 15);
+      console.log('balance is: ' + this.balance);
+    })
   }
 
   public ngOnChanges(changes: SimpleChanges) {

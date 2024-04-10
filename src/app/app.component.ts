@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { CounterserviceService } from './counterservice.service';
@@ -14,7 +14,7 @@ import { SampleUser } from './user.dat';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
 
   title = 'CountApp';
   names = ['lucifer', 'satan', 'beelzebub', 'morning star', 'devil'];
@@ -71,5 +71,13 @@ export class AppComponent {
     } else {
       this.counterServ.balance.next(this.counterServ.balance.value - 666);
     }
+  }
+
+  ngOnDestroy(): void {
+      console.log('destroying main app component');
+      console.log('bye byeeeeee');
+      setTimeout(() => {
+        console.log('bye byeeeeee after 5 seconds');
+      }, 5000);
   }
 }
